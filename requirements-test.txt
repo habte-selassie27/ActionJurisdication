@@ -1,0 +1,2 @@
+# Direct-mode tests. The suite installs its compatible genlayer-py range.
+genlayer-test @ git+https://github.com/genlayerlabs/genlayer-testing-suite@v0.29.2
