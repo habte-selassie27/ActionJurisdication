@@ -1,12 +1,12 @@
-"""Dependency-free reviewer-facing preflight for ActionJurisdication."""
+"""Dependency-free reviewer-facing preflight for ActionJurisdiction."""
 
 from pathlib import Path
 import ast
 
 ROOT = Path(__file__).resolve().parents[1]
-CONTRACT = ROOT / "contracts" / "actionjurisdication.py"
+CONTRACT = ROOT / "contracts" / "actionjurisdiction.py"
 CONSUMER = ROOT / "contracts" / "action_gate.py"
-TESTS = ROOT / "tests" / "direct" / "test_actionjurisdication.py"
+TESTS = ROOT / "tests" / "direct" / "test_actionjurisdiction.py"
 README = ROOT / "README.md"
 CONFIG = ROOT / "gltest.config.yaml"
 DEPLOY = ROOT / "scripts" / "deploy_studionet.sh"
@@ -29,15 +29,15 @@ def main():
     for item in (source, consumer, tests):
         ast.parse(item)
 
-    require("class ActionJurisdication(gl.Contract)" in source, "ActionJurisdication contract is present")
-    require("class IActionJurisdication" in source, "cross-contract interface is present")
+    require("class ActionJurisdiction(gl.Contract)" in source, "ActionJurisdiction contract is present")
+    require("class IActionJurisdiction" in source, "cross-contract interface is present")
     require("run_nondet_unsafe" in source, "custom leader/validator consensus is present")
     require("_classify_once" in source, "validators independently re-derive jurisdiction")
     require("required_mask" in source, "semantic jurisdiction is stored as a bounded bitmask")
-    require("min_distinct_approvers" in source, "matrix-wide distinct-signer floor is enforced")
+    require("min_distinct_approvers" in source, "jurisdiction-wide distinct-signer floor is enforced")
     require("proposer_may_approve" in source, "maker-checker control is configurable")
-    require("definition_hash" in source, "sealed matrix definition is hash-pinned")
-    require("actionjurisdication_is_authorized_for" in source, "reusable consumer authorization view exists")
+    require("definition_hash" in source, "sealed jurisdiction definition is hash-pinned")
+    require("actionjurisdiction_is_authorized_for" in source, "reusable consumer authorization view exists")
     require("class ActionGate(gl.Contract)" in consumer, "consumer proof contract is present")
     require(tests.count("def test_") >= 24, "substantial direct-mode suite is present")
     require("test_validator_rederives_jurisdiction_not_just_json_shape" in tests, "independent validator regression exists")

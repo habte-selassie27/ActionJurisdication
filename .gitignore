@@ -7,3 +7,4 @@ artifacts/
 /npm
 *.pyc
 .DS_Store
+evidence/

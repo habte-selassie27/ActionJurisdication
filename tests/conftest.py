@@ -1,4 +1,4 @@
-"""Shared direct-mode test configuration for ActionJurisdication."""
+"""Shared direct-mode test configuration for ActionJurisdiction."""
 
 import pytest
 

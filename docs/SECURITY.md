@@ -4,7 +4,7 @@ Related documents: [README](../README.md) · [Architecture](ARCHITECTURE.md) · 
 
 ## Threat model
 
-ActionJurisdication assumes action descriptions may be adversarial and treats them as data inside the classification prompt.
+ActionJurisdiction assumes action descriptions may be adversarial and treats them as data inside the classification prompt.
 
 The contract is designed against:
 
@@ -17,7 +17,7 @@ The contract is designed against:
 - same-signer cross-domain collapse when a distinct-signer floor is configured;
 - proposer self-approval when maker-checker separation is enabled;
 - action-hash replay inside the registry;
-- consumer use under a mismatched matrix, context, or action commitment.
+- consumer use under a mismatched jurisdiction, context, or action commitment.
 
 ## Consensus safety
 
@@ -31,7 +31,7 @@ Threshold satisfaction, approver membership, duplicate prevention, distinct-sign
 
 ## Known limits
 
-ActionJurisdication binds the supplied action hash, context hash, and normalized description hash into an on-chain commitment and requires the consumer to verify that same tuple at execution. It still cannot prove independently that the submitted prose truthfully describes an executable payload. The consuming integration must derive or display the description from the canonical payload, compute the payload hash itself, and pass both expected hashes and the commitment when executing.
+ActionJurisdiction binds the supplied action hash, context hash, and normalized description hash into an on-chain commitment and requires the consumer to verify that same tuple at execution. It still cannot prove independently that the submitted prose truthfully describes an executable payload. The consuming integration must derive or display the description from the canonical payload, compute the payload hash itself, and pass both expected hashes and the commitment when executing.
 
 The context hash is also only as strong as the canonical context encoded by the integrator. It should include chain identity, consumer identity/version, and operation family where appropriate.
 
@@ -41,6 +41,6 @@ The primitive does not replace wallet signatures, role-based access control, or 
 
 ## Regression coverage
 
-The properties above are pinned by the 28-test Direct Mode suite in `tests/direct/test_actionjurisdication.py`, including `test_authorized_action_rejects_description_from_different_action_commitment` (description/payload substitution), `test_validator_rederives_jurisdiction_not_just_json_shape` (independent validator agreement on the bitmask), and `test_global_distinct_signer_floor_is_independent_of_dimension_thresholds` (cross-domain distinct-signer collapse).
+The properties above are pinned by the 28-test Direct Mode suite in `tests/direct/test_actionjurisdiction.py`, including `test_authorized_action_rejects_description_from_different_action_commitment` (description/payload substitution), `test_validator_rederives_jurisdiction_not_just_json_shape` (independent validator agreement on the bitmask), and `test_global_distinct_signer_floor_is_independent_of_dimension_thresholds` (cross-domain distinct-signer collapse).
 
-`python scripts/preflight.py` re-checks the structural security properties in CI; the passing run for `main` is on the [workflow page](https://github.com/ometere123/authoritymatrix/actions/workflows/ci.yml?query=branch%3Amain).
+`python scripts/preflight.py` re-checks the structural security properties in CI; the passing run for `main` is on the [workflow page](https://github.com/ometere123/authorityjurisdiction/actions/workflows/ci.yml?query=branch%3Amain).

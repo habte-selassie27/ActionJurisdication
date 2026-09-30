@@ -4,7 +4,7 @@ Related documents: [README](../README.md) · [Security model](SECURITY.md) · [D
 
 ## Design goal
 
-ActionJurisdication separates semantic jurisdiction from authorization mechanics.
+ActionJurisdiction separates semantic jurisdiction from authorization mechanics.
 
 GenLayer consensus answers only:
 
@@ -16,25 +16,25 @@ All authority is already present on-chain before that question is asked.
 
 | File | Contract | Role |
 |---|---|---|
-| `contracts/actionjurisdication.py` | `ActionJurisdication` | Registry: matrix configuration and sealing, action intake, semantic classification, approval accounting, authorization state |
+| `contracts/actionjurisdiction.py` | `ActionJurisdiction` | Registry: jurisdiction configuration and sealing, action intake, semantic classification, approval accounting, authorization state |
 | `contracts/action_gate.py` | `ActionGate` | Reference consumer: verifies a consumer-bound commitment before recording a one-shot execution |
 
 Every public entry point is prefixed with the file that defines it, so a caller can tell from the method name alone which contract it targets. The complete list is in the [README public API table](../README.md#public-api).
 
-## Matrix
+## Jurisdiction
 
-A matrix contains:
+A jurisdiction contains:
 
 - owner during draft configuration;
 - human-readable purpose;
 - independent authority dimensions;
 - one threshold per dimension;
 - approver membership per dimension;
-- matrix-wide minimum distinct signer count;
+- jurisdiction-wide minimum distinct signer count;
 - optional maker-checker rule;
 - canonical sealed definition hash.
 
-A matrix becomes immutable when sealed.
+A jurisdiction becomes immutable when sealed.
 
 ## Dimension
 
@@ -46,7 +46,7 @@ The semantic description explains when that authority should be involved. Thresh
 
 An action binds:
 
-- sealed matrix ID and definition hash;
+- sealed jurisdiction ID and definition hash;
 - proposer;
 - consumer context hash;
 - exact executable action hash;
@@ -60,14 +60,14 @@ An action binds:
 ```text
 PENDING
     |
-actionjurisdication_classify_action
+actionjurisdiction_classify_action
     |
     +-- IN_SCOPE ------> AWAITING_APPROVALS --(thresholds + distinct-signer floor)--> AUTHORIZED
     +-- OUT_OF_SCOPE --> OUT_OF_SCOPE        (never authorizing)
     +-- AMBIGUOUS -----> AMBIGUOUS           (never authorizing)
 
-AWAITING_APPROVALS --actionjurisdication_revoke_approval--> AWAITING_APPROVALS
-any state except AUTHORIZED/CANCELLED --actionjurisdication_cancel_action--> CANCELLED
+AWAITING_APPROVALS --actionjurisdiction_revoke_approval--> AWAITING_APPROVALS
+any state except AUTHORIZED/CANCELLED --actionjurisdiction_cancel_action--> CANCELLED
 ```
 
 Transitions are deterministic. Only the classification step is nondeterministic, and its result is constrained to a bounded status plus a bitmask. AUTHORIZED and CANCELLED are final; revocation is available only while the action is awaiting approvals.
@@ -82,7 +82,7 @@ The model cannot:
 - weaken the global distinct-signer floor;
 - change the action hash;
 - change the consumer context;
-- change the matrix definition.
+- change the jurisdiction definition.
 
 It returns only a bounded jurisdiction classification.
 
@@ -90,7 +90,7 @@ The custom validator independently repeats that task and requires exact agreemen
 
 ## Fail-closed states
 
-OUT_OF_SCOPE is not an authorization shortcut. It means the matrix is not the correct authority system for the action.
+OUT_OF_SCOPE is not an authorization shortcut. It means the jurisdiction is not the correct authority system for the action.
 
 AMBIGUOUS never becomes authorizing and cannot advance toward authorization. Callers must create a new exact action commitment with a clearer description rather than asking the contract to guess.
 
@@ -103,12 +103,12 @@ The consumer-facing view requires:
     action_hash
     description_hash
     action_commitment
-    matrix_hash
+    jurisdiction_hash
 
 The view checks the supplied description hash against the frozen classified description and recomputes the domain-separated commitment from the supplied context, action hash, and description hash. This prevents the consumer from substituting a benign description for a different executable payload.
 
-## Why the matrix is immutable
+## Why the jurisdiction is immutable
 
 Mutable authority definitions create a policy-substitution problem: an administrator could alter thresholds or approvers after an action was opened.
 
-ActionJurisdication avoids that class of ambiguity entirely. Updates require a new sealed matrix. Consumers decide which exact matrix hash they trust.
+ActionJurisdiction avoids that class of ambiguity entirely. Updates require a new sealed jurisdiction. Consumers decide which exact jurisdiction hash they trust.

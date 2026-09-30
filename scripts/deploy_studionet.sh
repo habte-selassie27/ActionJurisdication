@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-CONTRACT="contracts/actionjurisdication.py"
+CONTRACT="contracts/actionjurisdiction.py"
 RPC="https://studio.genlayer.com/api"
 EXPECTED_CHAIN_ID="61999"
 

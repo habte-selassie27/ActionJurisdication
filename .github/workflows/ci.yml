@@ -1,4 +1,4 @@
-name: ActionJurisdication CI
+name: ActionJurisdiction CI
 
 on:
   push:
